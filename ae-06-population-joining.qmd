@@ -74,6 +74,7 @@ continents
 
 ```{r}
 #| label: join-population-continents
+
 population_continent <- population %>%
   left_join(continents, join_by(country == entity))
 ```
@@ -82,7 +83,11 @@ population_continent <- population %>%
 
 ```{r}
 #| label: data-inspect
-print(population_continent)
+
+missing_countries <- population_continent %>% 
+  filter(is.na(continent)) %>% 
+  select(country)
+print(missing_countries)  
 ```
 
 -   **Demo:** All of these countries are actually in the `continents` data frame, but under different names. So, let's clean that data first by updating the country names in the `population` data frame in a way they will match the `continents` data frame, and then joining them, using a `case_when()` statement in `mutate()`. At the end, check that all countries now have continent information.
@@ -90,12 +95,25 @@ print(population_continent)
 ```{r}
 #| label: data-clean
 
-# add code here
+population_cleaned <- population %>% 
+    mutate(country = case_when(
+    country == "Congo, Dem. Rep." ~ "Congo",
+    country == "Congo, Rep." ~ "Congo",
+    country == "Hong Kong SAR, China" ~ "Hong Kong",
+    country == "Korea, Dem. People's Rep." ~ "Korea (former)",
+    country == "Korea, Rep." ~ "Korea (former)",
+    country == "Kyrgyz Republic" ~ "Kyrgyzstan",
+    TRUE ~ country  
+  ))
+population_continent <- population_cleaned %>% 
+  left_join(continents, join_by(country == entity))
+
+print(population_continent)
 ```
 
 -   **Think out loud:** Which continent do you think has the highest population? Which do you think has the second highest? The lowest?
 
-Add your response here.
+I think Asia has the highest population, I think North America has the second highest and I think that Oceania has the lowest.
 
 -   **Demo:** Create a new data frame called `population_summary` that contains a row for each continent and a column for the total population for that continent, in descending order of population. Note that the function for calculating totals in R is `sum()`.
 
