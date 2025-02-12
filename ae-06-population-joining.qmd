@@ -1,5 +1,7 @@
 ---
 title: "AE 06: Joining country populations with continents"
+author: "Hannah Andronyk"
+format: pdf
 ---
 
 ## Goal
@@ -62,26 +64,25 @@ continents
 
     -   Which variable(s) will we use to join the `population` and `continents` data frames?
 
-    Add response here.
+    country and entity
 
     -   We want to create a new data frame that keeps all rows and columns from `population` and brings in the corresponding information from `continents`. Which join function should we use?
 
-    Add response here.
+    left_join()
 
 -   **Demo:** Join the two data frames and name assign the joined data frame to a new data frame `population_continents`.
 
 ```{r}
 #| label: join-population-continents
-
-# add code here
+population_continent <- population %>%
+  left_join(continents, join_by(country == entity))
 ```
 
 -   **Demo:** Take a look at the newly created `population_continent` data frame. There are some countries that were not in `continents`. First, identify which countries these are (they will have `NA` values for `continent`).
 
 ```{r}
 #| label: data-inspect
-
-# add code here
+print(population_continent)
 ```
 
 -   **Demo:** All of these countries are actually in the `continents` data frame, but under different names. So, let's clean that data first by updating the country names in the `population` data frame in a way they will match the `continents` data frame, and then joining them, using a `case_when()` statement in `mutate()`. At the end, check that all countries now have continent information.
