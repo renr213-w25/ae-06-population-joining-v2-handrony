@@ -113,14 +113,19 @@ print(population_continent)
 
 -   **Think out loud:** Which continent do you think has the highest population? Which do you think has the second highest? The lowest?
 
-I think Asia has the highest population, I think North America has the second highest and I think that Oceania has the lowest.
+I think Asia has the highest population, I think Africa has the second highest and I think that Oceania has the lowest.
 
 -   **Demo:** Create a new data frame called `population_summary` that contains a row for each continent and a column for the total population for that continent, in descending order of population. Note that the function for calculating totals in R is `sum()`.
 
 ```{r}
 #| label: population-continents-sum
 
-# add code here
+population_summary <- population_continent %>%
+  group_by(continent) %>% 
+  summarize(total_population = sum(population)) %>% 
+  arrange(-total_population)
+
+print(population_summary)
 ```
 
 -   **Your turn:** Make a bar plot with total population on the y-axis and continent on the x-axis, where the height of each bar represents the total population in that continent.
@@ -128,7 +133,13 @@ I think Asia has the highest population, I think North America has the second hi
 ```{r}
 #| label: population-summary-bar
 
-# add code here
+ggplot(population_summary, aes(x = continent, y = total_population)) +
+  geom_col() +
+  labs(
+    title = "Total population for each continent",
+    x = "Continents",
+    y = "Population"
+  )
 ```
 
 -   **Your turn:** Recreate the following plot, which is commonly referred to as a **lollipop plot**. Hint: Start with the points, then try adding the `segment`s, then add axis labels and `caption`, and finally, as a stretch goal, update the x scale (which will require a function we haven't introduced in lectures or labs yet!).
@@ -139,9 +150,20 @@ I think Asia has the highest population, I think North America has the second hi
 #| label: population-summary-lollipop
 #| fig-asp: 0.4
 
-# add code here
+ggplot(population_summary, aes(x = total_population, y = continent)) +
+  geom_point() +
+  geom_segment(aes(xend = total_population, x = 0, yend = continent)) +
+  labs(
+    title = "World population",
+    subtitle = "As of 2022",
+    x = "Total population",
+    y = "Continent",
+    caption = "Data sources: The World Bank and Our World in Data"
+  ) +
+  scale_x_continuous(labels = label_number(scale = 1e-6, suffix = " bil")) +
+  theme_minimal()
 ```
 
 -   **Think out loud:** What additional improvements would you like to make to this plot.
 
-Add your response here.
+I would like to colour the different "lollipops" because it would be slightly easier to read and I would make the segments and the points a little larger beacause they are quite skinny right now.
